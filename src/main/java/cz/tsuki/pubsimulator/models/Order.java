@@ -17,7 +17,10 @@ public class Order {
     @GeneratedValue
     private Long orderId;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "orders")
+    @ManyToOne
+    private User user;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "productId")
     private List<Product> products = new ArrayList<>();
 
     private int amount;
