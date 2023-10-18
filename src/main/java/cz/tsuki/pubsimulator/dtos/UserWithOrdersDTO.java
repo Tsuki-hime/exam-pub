@@ -3,13 +3,11 @@ package cz.tsuki.pubsimulator.dtos;
 import cz.tsuki.pubsimulator.models.Order;
 import cz.tsuki.pubsimulator.models.User;
 import cz.tsuki.pubsimulator.services.UserService;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-
 public class UserWithOrdersDTO {
 
     private Long userId;
@@ -28,7 +26,6 @@ public class UserWithOrdersDTO {
         this.pocket = user.getPocket();
         this.orders = userService.getOrders(userId);
     }
-
 
 
 }
