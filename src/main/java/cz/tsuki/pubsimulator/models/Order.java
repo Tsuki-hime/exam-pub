@@ -20,7 +20,7 @@ public class Order {
     @ManyToOne
     private User user;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "productId")
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Product> products = new ArrayList<>();
 
     private int amount;

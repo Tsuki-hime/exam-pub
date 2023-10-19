@@ -1,7 +1,6 @@
 package cz.tsuki.pubsimulator.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +20,7 @@ public class User {
     private boolean isAdult;
     private int pocket;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "users")
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Order> orders;
 
 }

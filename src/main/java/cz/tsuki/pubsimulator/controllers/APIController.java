@@ -45,6 +45,8 @@ public class APIController {
 
         return ResponseEntity.status(200).body(productService.getAllProducts());
     }
+
+    /*
     @GetMapping("/summary/all")
     public ResponseEntity<?> getAllOrdersOfAllDrinks(){
         //return DTO that contains  product, amount, unitprice summarz price / kinda like inventorz linsting
@@ -66,5 +68,5 @@ public class APIController {
 
     }
 
-
+*/
 }
