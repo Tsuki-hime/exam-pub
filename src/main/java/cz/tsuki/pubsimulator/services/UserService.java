@@ -7,7 +7,6 @@ import cz.tsuki.pubsimulator.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,13 +20,11 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public List<Order> getOrders(Long id){
-      return orderRepository.findAllByUser(userRepository.findById(id).get());
-
+    public List<Order> getOrders(Long id) {
+        return orderRepository.findAllByUser(userRepository.findById(id).get());
     }
 
-    public Optional<User> getUserById(Long id){
-      return userRepository.findById(id);
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
     }
-
 }
