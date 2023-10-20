@@ -4,10 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 @Entity
 @Table(name = "orders")
 @Data
@@ -20,18 +16,16 @@ public class Order {
 
     @ManyToOne
     private User user;
-
-    @OneToMany(fetch = FetchType.EAGER)
-    private List<Product> products = new ArrayList<>();
-
+    @OneToOne
+    private Product product;
     private int amount;
     private int price;
 
-    public Order(User user, Product drinkName, int amount) {
+    public Order(User user, Product drink, int amount) {
         this.user = user;
         this.amount = amount;
-        this.price = amount*drinkName.getProductPrice();
-        products.add(drinkName);
+        this.price = amount * drink.getProductPrice();
+        this.product = drink;
     }
 
 }

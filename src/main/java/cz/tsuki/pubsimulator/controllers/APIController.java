@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -42,7 +42,7 @@ public class APIController {
     }
 
     @PostMapping("/buy")
-    public ResponseEntity<?> letsDrink(@RequestParam("drink")Optional<Product> drinkName,@RequestParam("amount") int amount){
+    public ResponseEntity<?> letsDrink(@RequestParam("drink") Long drinkId, @RequestParam("amount") int amount) {
         User user = User.builder()
                 .userId(userService.getCurrentUserId())
                 .username(userService.getCurrentUserName())
@@ -51,22 +51,23 @@ public class APIController {
                 pocket(userService.getCurrentUserMoneyStatus()).
                 build();
 
-        if (user.getPocket() <= amount * productService.getProductPrice(drinkName.toString())) {
-            return ResponseEntity.status(402).body("No money, no funney!");
-        } else if (!user.isAdult() && productService.isForAdult(drinkName.toString())) {
-            return ResponseEntity.status(400).body("Get lost, kid!");
-        } else if (!user.isAdult() && !productService.isForAdult(drinkName.toString()) && user.getPocket() >= productService.getProductPrice(drinkName.toString())) {
-            Order order = new Order(user, drinkName.get(), amount);
-            userService.payingForIt(order.getPrice(), user.getUserId());
-            return ResponseEntity.status(201).body("Pay up, kid!" + order);
-        } else if (user.isAdult() && user.getPocket() >= amount * productService.getProductPrice(drinkName.toString())){
-            Order order = new Order(user, drinkName.get(), amount);
-            userService.payingForIt(order.getPrice(), user.getUserId());
-            return ResponseEntity.status(201).body("Money on the table!" + order);
-        } else {
-            return  ResponseEntity.status(417).body("Looks like you aren't drinking tonight...");
-        }
+        try{
+            Product drink = productService.getProductById(drinkId);
 
+            if (user.getPocket() <= amount * drink.getProductPrice()) {
+                return ResponseEntity.status(402).body("No money, no funney!");
+            } else if (!user.isAdult() && drink.isForAdult()) {
+                return ResponseEntity.status(400).body("Get lost, kid!");
+            } else if (user.getPocket() >= amount * drink.getProductPrice()) {
+                Order order = new Order(user,drink, amount);
+                userService.payingForIt(order.getPrice(), user.getUserId());
+                return ResponseEntity.status(201).body("Money on the table!" + order);
+            } else {
+                return ResponseEntity.status(417).body("Looks like you aren't drinking tonight...");
+            }
+        } catch (NoSuchElementException notFound){
+            return ResponseEntity.status(404).body("This drink doesn't exist yet.");
+        }
     }
 
     /*
