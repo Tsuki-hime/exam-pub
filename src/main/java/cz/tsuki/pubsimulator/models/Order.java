@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name = "orders")
@@ -25,4 +26,12 @@ public class Order {
 
     private int amount;
     private int price;
+
+    public Order(User user, Product drinkName, int amount) {
+        this.user = user;
+        this.amount = amount;
+        this.price = amount*drinkName.getProductPrice();
+        products.add(drinkName);
+    }
+
 }

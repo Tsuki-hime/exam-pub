@@ -16,4 +16,12 @@ public class ProductService {
     public List<Product> getAllProducts(){
         return productRepository.findAll();
     }
+
+public int getProductPrice(String productName){
+        return productRepository.findProductByProductName(productName).get().getProductPrice();
+}
+
+    public boolean isForAdult(String drinkName) {
+        return productRepository.findProductByProductName(drinkName).get().isForAdult();
+    }
 }

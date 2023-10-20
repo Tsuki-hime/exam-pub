@@ -1,47 +1,53 @@
 package cz.tsuki.pubsimulator.security;
 
+import cz.tsuki.pubsimulator.repositories.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@AllArgsConstructor
+@EnableWebSecurity
 public class SecurityConfig {
+    private final UserRepository userRepository;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public InMemoryUserDetailsManager userDetailsManager() {
-        UserDetails user1 = User.builder()
-                .username("Bartender Ben")
-                .password(passwordEncoder().encode("YouShallNotPass"))
-                .roles("BARTENDER")
-                .build();
-        UserDetails user2 = User.builder()
-                .username("Pirate King")
-                .password(passwordEncoder().encode("Aye,myBooze"))
-                .roles("DRUNK")
-                .build();
-        UserDetails user3 = User.builder()
-                .username("Dracula")
-                .password(passwordEncoder().encode("WeDrinkYourBlood"))
-                .roles("DRUNK")
-                .build();
-        UserDetails user4 = User.builder()
-                .username("Ranger Captain Velorana")
-                .password(passwordEncoder().encode("IAmForsaken"))
-                .roles("DRUNK")
-                .build();
-        return new InMemoryUserDetailsManager(user1, user2, user3, user4);
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+            throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return username -> (UserDetails) userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found."));
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
     }
 
     @Bean
