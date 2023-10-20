@@ -1,26 +1,19 @@
 package cz.tsuki.pubsimulator.models;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "bartenders")
-@Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class Bartender {
-    @Id
-    @GeneratedValue
-    private Long bartenderId;
-    private String bartenderName;
-    private String password;
-    private boolean isActive;
+@DiscriminatorValue("BARTENDER")
+public class Bartender extends User {
+    public Bartender() {
+        this.setRole(Role.BARTENDER);
+    }
 
-    @Enumerated(EnumType.STRING)
-    private Role role = Role.BARTENDER;
-
+    @Override
+    public boolean canBuyBooze() {
+        return true;
+    }
 }

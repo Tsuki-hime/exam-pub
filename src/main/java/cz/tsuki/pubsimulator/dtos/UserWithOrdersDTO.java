@@ -22,7 +22,7 @@ public class UserWithOrdersDTO {
         this.userId = user.getUserId();
         this.username = user.getUsername();
         this.isActive = user.isActive();
-        this.isAdult = user.isAdult();
+        this.isAdult = user.canBuyBooze();
         this.pocket = user.getPocket();
         this.orders = userService.getOrders(userId);
     }

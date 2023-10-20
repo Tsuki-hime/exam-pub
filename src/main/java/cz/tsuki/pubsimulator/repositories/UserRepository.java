@@ -1,11 +1,16 @@
 package cz.tsuki.pubsimulator.repositories;
 
+import cz.tsuki.pubsimulator.models.Drunk;
 import cz.tsuki.pubsimulator.models.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Long> {
-Optional<User> findUserByUsername(String username);
+public interface UserRepository extends CrudRepository<User, Long> {
+    Optional<User> findUserByUsername(String username);
+
+    @Query("SELECT u FROM User u WHERE role = Drunk")
+    List<Drunk> findAllDrunks();
 }

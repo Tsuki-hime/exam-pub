@@ -1,6 +1,8 @@
 package cz.tsuki.pubsimulator.services;
 
+import cz.tsuki.pubsimulator.models.Drunk;
 import cz.tsuki.pubsimulator.models.Order;
+import cz.tsuki.pubsimulator.models.Role;
 import cz.tsuki.pubsimulator.models.User;
 import cz.tsuki.pubsimulator.repositories.OrderRepository;
 import cz.tsuki.pubsimulator.repositories.UserRepository;
@@ -18,10 +20,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
     public List<Order> getOrders(Long id) {
         return orderRepository.findAllByUser(userRepository.findById(id).get());
     }
@@ -30,37 +28,15 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public Long getCurrentUserId() {
+    public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String name = authentication.getName();
-        return userRepository.findUserByUsername(name).get().getUserId();
+        return userRepository.findUserByUsername(name).get();
     }
 
-    public String getCurrentUserName() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getName();
+    public List<Drunk> getAllDrunks() {
+        return userRepository.findAllDrunks();
     }
 
-    public boolean getCurrentUserStatus() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String name = authentication.getName();
-        return userRepository.findUserByUsername(name).get().isActive();
-    }
 
-    public boolean getCurrentUserAgeLimit() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String name = authentication.getName();
-        return userRepository.findUserByUsername(name).get().isAdult();
-    }
-
-    public int getCurrentUserMoneyStatus() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String name = authentication.getName();
-        return userRepository.findUserByUsername(name).get().getPocket();
-    }
-
-    public void payingForIt(int price, Long userId) {
-        User user = userRepository.findById(userId).get();
-        user.setPocket(user.getPocket() - price);
-    }
 }

@@ -4,6 +4,7 @@ import cz.tsuki.pubsimulator.dtos.UserWithOrdersDTO;
 import cz.tsuki.pubsimulator.models.Order;
 import cz.tsuki.pubsimulator.models.Product;
 import cz.tsuki.pubsimulator.models.User;
+import cz.tsuki.pubsimulator.services.OrderService;
 import cz.tsuki.pubsimulator.services.ProductService;
 import cz.tsuki.pubsimulator.services.UserService;
 import lombok.AllArgsConstructor;
@@ -20,16 +21,20 @@ public class APIController {
 
     private final UserService userService;
     private final ProductService productService;
+    private final OrderService orderService;
 
     @GetMapping("/users")
     public ResponseEntity<?> getUsers() {
-        return ResponseEntity.status(200).body(userService.getAllUsers());
+        return ResponseEntity.status(200).body(userService.getAllDrunks());
     }
 
     @GetMapping("/users/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         Optional<User> maybeUser = userService.getUserById(id);
-        if (maybeUser.isPresent()) {
+
+        if (maybeUser.isPresent() && maybeUser.get().isBartender(id)) {
+            return ResponseEntity.status(401).body("That's bartender's account, get out!");
+        } else if (maybeUser.isPresent()) {
             return ResponseEntity.status(200).body(new UserWithOrdersDTO(maybeUser.get()));
         } else {
             return ResponseEntity.status(404).body("User does not exist.");
@@ -43,24 +48,18 @@ public class APIController {
 
     @PostMapping("/buy")
     public ResponseEntity<?> letsDrink(@RequestParam("drink") Long drinkId, @RequestParam("amount") int amount) {
-        User user = User.builder()
-                .userId(userService.getCurrentUserId())
-                .username(userService.getCurrentUserName())
-                .isActive(userService.getCurrentUserStatus())
-                .isAdult(userService.getCurrentUserAgeLimit()).
-                pocket(userService.getCurrentUserMoneyStatus()).
-                build();
-
+        User user = userService.getCurrentUser();
         try{
             Product drink = productService.getProductById(drinkId);
+            Order order = new Order(user, drink, amount);
 
-            if (user.getPocket() <= amount * drink.getProductPrice()) {
+            if (user.getPocket() <= order.getPrice()) {
                 return ResponseEntity.status(402).body("No money, no funney!");
-            } else if (!user.isAdult() && drink.isForAdult()) {
+            } else if (!user.canBuyBooze() && drink.isForAdult()) {
                 return ResponseEntity.status(400).body("Get lost, kid!");
-            } else if (user.getPocket() >= amount * drink.getProductPrice()) {
-                Order order = new Order(user,drink, amount);
-                userService.payingForIt(order.getPrice(), user.getUserId());
+            } else if (user.getPocket() >= order.getPrice()) {
+                user.payForIt(order.getPrice());
+                orderService.save(order);
                 return ResponseEntity.status(201).body("Money on the table!" + order);
             } else {
                 return ResponseEntity.status(417).body("Looks like you aren't drinking tonight...");
