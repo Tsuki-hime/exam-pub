@@ -49,7 +49,7 @@ public class APIController {
     @PostMapping("/buy")
     public ResponseEntity<?> letsDrink(@RequestParam("drink") Long drinkId, @RequestParam("amount") int amount) {
         User user = userService.getCurrentUser();
-        try{
+        try {
             Product drink = productService.getProductById(drinkId);
             Order order = new Order(user, drink, amount);
 
@@ -64,9 +64,33 @@ public class APIController {
             } else {
                 return ResponseEntity.status(417).body("Looks like you aren't drinking tonight...");
             }
-        } catch (NoSuchElementException notFound){
+        } catch (NoSuchElementException notFound) {
             return ResponseEntity.status(404).body("This drink doesn't exist yet.");
         }
+    }
+
+    @GetMapping("/seed")
+    public ResponseEntity<?> createDrinks() {
+
+        Product drink1 = new Product();
+        drink1.setProductName("Bloody Mary");
+        drink1.setProductPrice(150);
+        drink1.setForAdult(true);
+        productService.save(drink1);
+
+        Product drink2 = new Product();
+        drink2.setProductName("GinTon");
+        drink2.setProductPrice(100);
+        drink2.setForAdult(true);
+        productService.save(drink2);
+
+        Product drink3 = new Product();
+        drink3.setProductName("Spirited Water");
+        drink3.setProductPrice(50);
+        drink3.setForAdult(false);
+        productService.save(drink3);
+
+        return ResponseEntity.status(200).body("Drinks created.");
     }
 
     /*

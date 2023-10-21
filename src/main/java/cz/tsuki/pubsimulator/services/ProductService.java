@@ -21,4 +21,8 @@ public class ProductService {
     public Product getProductById(Long productId) throws NoSuchElementException {
         return productRepository.findById(productId).get();
     }
+
+    public void save(Product product) {
+        productRepository.save(product);
+    }
 }

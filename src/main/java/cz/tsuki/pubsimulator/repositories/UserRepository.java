@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface UserRepository extends CrudRepository<User, Long> {
     Optional<User> findUserByUsername(String username);
 
-    @Query("SELECT u FROM User u WHERE role = Drunk")
+    @Query("SELECT u FROM User u WHERE TYPE(u)= Drunk")
     List<Drunk> findAllDrunks();
 }
