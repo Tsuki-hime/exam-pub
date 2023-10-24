@@ -62,9 +62,9 @@ public class SecurityConfig {
                 }))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers("/api/users/*", "/api/summary/*").hasRole("BARTENDER")
+                        request.requestMatchers("/api/users/*").hasRole("BARTENDER")
                                 .requestMatchers( "/api/buy").hasRole("DRUNK")
-                                .requestMatchers("/api/seed", "/api/drink-menu").permitAll())
+                                .requestMatchers("/api/seed", "/api/drink-menu",  "/api/summary/*").permitAll())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();

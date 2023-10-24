@@ -1,5 +1,6 @@
 package cz.tsuki.pubsimulator.controllers;
 
+import cz.tsuki.pubsimulator.dtos.DrinkAndItsOrdersDTO;
 import cz.tsuki.pubsimulator.dtos.UserWithOrdersDTO;
 import cz.tsuki.pubsimulator.models.Order;
 import cz.tsuki.pubsimulator.models.Product;
@@ -11,6 +12,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -93,14 +96,17 @@ public class APIController {
         return ResponseEntity.status(200).body("Drinks created.");
     }
 
-    /*
+
     @GetMapping("/summary/all")
-    public ResponseEntity<?> getAllOrdersOfAllDrinks(){
-        //return DTO that contains  product, amount, unitprice summarz price / kinda like inventorz linsting
-
-
+    public ResponseEntity<?> getAllOrdersForAllDrinks(){
+        List<Product> products = productService.getAllProducts();
+        List<DrinkAndItsOrdersDTO> drinkDTOS = new ArrayList<>();
+        for (Product p : products) {
+            drinkDTOS.add(new DrinkAndItsOrdersDTO(p.getProductId()));
+        }
+        return ResponseEntity.status(200).body(drinkDTOS);
     }
-
+/*
     @GetMapping("/summary/product")
     public ResponseEntity<?> getAllOrdersOfThisProduct(@RequestParam Optional<String> productName){
         //return DTO that contains  all orders of this drink for all drinks like in a table?
@@ -114,6 +120,6 @@ public class APIController {
         //or returns DTO that contains all orders of user and displazs it for all users
 
     }
-
 */
+
 }

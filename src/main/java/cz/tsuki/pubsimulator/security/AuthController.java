@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
     // userService or create auth service?
-
+/*
     @PostMapping("/register")
     public ResponseEntity<?> register(){
 
@@ -25,5 +25,5 @@ public class AuthController {
 
 
     }
-
+*/
 }
