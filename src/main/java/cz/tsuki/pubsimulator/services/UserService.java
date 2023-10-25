@@ -2,7 +2,6 @@ package cz.tsuki.pubsimulator.services;
 
 import cz.tsuki.pubsimulator.models.Drunk;
 import cz.tsuki.pubsimulator.models.Order;
-import cz.tsuki.pubsimulator.models.Role;
 import cz.tsuki.pubsimulator.models.User;
 import cz.tsuki.pubsimulator.repositories.OrderRepository;
 import cz.tsuki.pubsimulator.repositories.UserRepository;
@@ -28,6 +27,10 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public Optional<User> getUserByUsername(String username) {
+        return userRepository.findUserByUsername(username);
+    }
+
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String name = authentication.getName();
@@ -39,4 +42,7 @@ public class UserService {
     }
 
 
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 }
