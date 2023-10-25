@@ -18,11 +18,11 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    public List<Order> getAllOrders(){
+    public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
 
-    public List<Long> getAllOrderIdsOfProduct(Product product){
+    public List<Long> getAllOrderIdsOfProduct(Product product) {
         List<Order> orders = orderRepository.findAllByProduct(product);
         List<Long> orderIds = new ArrayList<>();
         for (Order o : orders) {
@@ -31,12 +31,16 @@ public class OrderService {
         return orderIds;
     }
 
-    public int getTotalProductAmountForAllItsOrders(Product product){
+    public int getTotalProductAmountForAllItsOrders(Product product) {
         List<Order> orders = orderRepository.findAllByProduct(product);
         int totalAmount = 0;
         for (Order o : orders) {
             totalAmount += o.getAmount();
         }
         return totalAmount;
+    }
+
+    public List<Order> getAllOrdersOfProduct(Product product) {
+        return orderRepository.findAllByProduct(product);
     }
 }

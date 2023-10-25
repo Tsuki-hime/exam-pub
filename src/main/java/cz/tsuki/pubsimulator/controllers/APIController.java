@@ -1,6 +1,7 @@
 package cz.tsuki.pubsimulator.controllers;
 
 import cz.tsuki.pubsimulator.dtos.DrinkAndItsOrdersDTO;
+import cz.tsuki.pubsimulator.dtos.ProductOrdersDTO;
 import cz.tsuki.pubsimulator.dtos.UserWithOrdersDTO;
 import cz.tsuki.pubsimulator.models.Order;
 import cz.tsuki.pubsimulator.models.Product;
@@ -98,7 +99,7 @@ public class APIController {
 
 
     @GetMapping("/summary/all")
-    public ResponseEntity<?> getAllOrdersForAllDrinks(){
+    public ResponseEntity<?> getAllOrdersForAllDrinks() {
         List<Product> products = productService.getAllProducts();
         List<DrinkAndItsOrdersDTO> drinkDTOS = new ArrayList<>();
         for (Product p : products) {
@@ -106,14 +107,23 @@ public class APIController {
         }
         return ResponseEntity.status(200).body(drinkDTOS);
     }
-/*
+
     @GetMapping("/summary/product")
-    public ResponseEntity<?> getAllOrdersOfThisProduct(@RequestParam Optional<String> productName){
-        //return DTO that contains  all orders of this drink for all drinks like in a table?
+    public ResponseEntity<?> getAllOrdersOfThisProduct(@RequestParam Optional<String> productName) {
+        Optional<Product> optProduct = productService.findByName(productName.toString());
 
-
+        if (optProduct.isPresent()) {
+            Product product = optProduct.get();
+            return ResponseEntity.status(200).body(new ProductOrdersDTO(product));
+        } else {
+            return ResponseEntity.status(404).body("We don't serve this drink.");
+        }
     }
 
+
+
+
+/*
     @GetMapping("/summary/user")
     public ResponseEntity<?> getAllOrdersOfUser(@RequestParam Optional<String> username){
         //return DTO that contains  all orders of this user

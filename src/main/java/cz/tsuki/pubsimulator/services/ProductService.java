@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -26,4 +27,8 @@ public class ProductService {
         productRepository.save(product);
     }
 
+
+    public Optional<Product> findByName(String productName) {
+       return Optional.ofNullable(productRepository.findByProductName(productName));
+    }
 }
