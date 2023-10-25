@@ -19,9 +19,8 @@ public class DrinkAndItsOrdersDTO {
     private OrderService orderService;
     private ProductService productService;
 
-    public DrinkAndItsOrdersDTO(Long productId) {
-        Product product = productService.getProductById(productId);
-        this.productId = productId;
+    public DrinkAndItsOrdersDTO(Product product) {
+        this.productId = product.getProductId();
         this.productName = product.getProductName();
         this.unitPrice = product.getProductPrice();
         this.amount = orderService.getTotalProductAmountForAllItsOrders(product);

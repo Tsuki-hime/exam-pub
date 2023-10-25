@@ -102,7 +102,7 @@ public class APIController {
         List<Product> products = productService.getAllProducts();
         List<DrinkAndItsOrdersDTO> drinkDTOS = new ArrayList<>();
         for (Product p : products) {
-            drinkDTOS.add(new DrinkAndItsOrdersDTO(p.getProductId()));
+            drinkDTOS.add(new DrinkAndItsOrdersDTO(p));
         }
         return ResponseEntity.status(200).body(drinkDTOS);
     }
